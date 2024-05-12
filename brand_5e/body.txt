@@ -62,6 +62,7 @@ def check(dc, *skill):
 
 
 # similar to the save function, but with a skill
+FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["opposedcheck"] = "profbonus"
 def opposedcheck(ability, abilitybonus, profbonus):
     dc = 8 + abilitybonus + profbonus
     ability_name = ""
@@ -71,6 +72,7 @@ def opposedcheck(ability, abilitybonus, profbonus):
 
 
 # returns in the form of "DC challenge Ability saving throw"
+FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["save"] = "profbonus"
 def save(ability, abilitybonus, profbonus):
     dc = 8 + abilitybonus + profbonus
     ability_name = ""

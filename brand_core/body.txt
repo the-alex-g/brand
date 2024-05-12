@@ -158,8 +158,11 @@ def _format_and_execute(field, params):
             else:
                 formatted_field += char
                 function_name += char
-    if function_name in FUNCTIONS_REQUIRING_PROFBONUS:
-        formatted_field += ", " + str(params["profbonus"])
+    if function_name in FUNCTIONS_REQUIRING_EXTRA_PARAMETERS:
+        for param_name in FUNCTIONS_REQUIRING_EXTRA_PARAMETERS[function_name]:
+            if formatted_field[-1] != "(":
+                formatted_field += ", "
+            formatted_field += str(params[param_name])
     return eval(formatted_field + ")")
 
 
@@ -274,9 +277,3 @@ def get_key_if_exists(dictionary, key, default):
         return dictionary[key]
     else:
         return default
-
-
-if os.path.isfile(CONFIG_PATH):
-    parse_string(separate(open(CONFIG_PATH).readlines()), {})
-if os.path.isfile(EXTENSION_PATH):
-    from brand_extension import *
