@@ -69,25 +69,22 @@ def compile(module_name="", file_name="brand"):
         modules_to_compile.append(module_name)
 
     brand_file = open(file_name + ".py", "w")
+
+    # get version information
+    brand_file.write("# BRAND CORE v.")
+    brand_file.write(get_module_section("core", "version"))
+    if module_name != "core":
+        brand_file.write("\n# additional module: " + module_name + " v." + get_module_section(module_name, "version") + "\n")
+    
     # compile module imports
     for module in modules_to_compile:
-        brand_file.write(get_module_section(module, "imports") + "\n")
-    # add a line of empty space
-    brand_file.write("\n")
+        brand_file.write("\n" + get_module_section(module, "imports"))
     # compile module global variables
     for module in modules_to_compile:
-        brand_file.write(get_module_section(module, "globals") + "\n")
-    # add two empty lines
-    brand_file.write("\n\n")
+        brand_file.write("\n" + get_module_section(module, "globals"))
     # compile module bodies
     for module in modules_to_compile:
-        brand_file.write(get_module_section(module, "body") + "\n\n\n")
-    
-    brand_file.write("# using modules: ")
-    for module in modules_to_compile:
-        brand_file.write(module + " " + get_module_section(module, "version"))
-        if module != modules_to_compile[-1]:
-            brand_file.write(", ")
+        brand_file.write("\n\n\n" + get_module_section(module, "body"))
     
     brand_file.close()
 
