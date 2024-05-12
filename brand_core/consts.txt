@@ -1,0 +1,6 @@
+FUNCTIONS_REQUIRING_PROFBONUS = ["save", "opposedcheck"]
+NEWLINE = "\\\\"
+LINEBREAK = "\\bigskip"
+ABILITY_LIST = ["str", "dex", "con", "int", "wis", "cha"]
+CONFIG_PATH = "brand_config.txt"
+EXTENSION_PATH = "brand_extension.py"
