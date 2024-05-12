@@ -1,10 +1,3 @@
-# changes the value of ABILITY_LIST
-def set_ability_list(*to):
-    global ABILITY_LIST
-    ABILITY_LIST = to
-    return ""
-
-
 # returns in the form of "result (dice + bonus)"
 def roll(num, size, *bonuses):
     total_bonus = 0
@@ -19,6 +12,14 @@ def roll(num, size, *bonuses):
             string += " - "
         string += str(abs(total_bonus))
     return string + ")"
+
+
+# adds all the inputs and returns them as a string
+def sum(*numbers):
+    total = 0
+    for number in numbers:
+        total += number
+    return str(total)
 
 
 # returns the name with the proper indefinite article prefixed to it
