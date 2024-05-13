@@ -55,9 +55,3 @@ def _score_to_bonus(score):
 # returns in the form of "score (bonus)"
 def stat(score):
     return str(score) + " (" + format_bonus(_score_to_bonus(score)) + ")"
-
-
-FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["opposedcheck"] = ["profbonus"]
-FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["save"] = ["profbonus"]
-for ability in ["str", "dex", "con", "int", "wis", "cha"]:
-    AUTOMATIC_VARIABLES.append(ability)

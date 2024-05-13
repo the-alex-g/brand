@@ -22,7 +22,7 @@ Brand commands are contained in square brackets, and the arguments are separated
 ### Brand Variables
 Variables are denoted by the variable name surrounded with square brackets. The actual variable names and associated values are stored in the dictionary passed to the eval_string function. For example, `brand.eval_string("The variable foo is equal to [foo]", {"foo":3})` evaluates to `"The variable foo is equal to 3"`.
 
-Brand has an AUTOMATIC_VARIABLES variable, which is a list of variable names. A variable name that is in AUTOMATIC_VARIABLES is always replaced with its value, even if it is not in square brackets. However, variables are only replaced this way when inside of another command. For example, if "str" is in AUTOMATIC VARIABLES, `brand.eval_string("str bonus is equal to [format_bonus str].", {"str":2})` evaluates to `str bonus is equal to +2.`
+Brand has an AUTOMATIC_VARIABLES variable, which is a list of variable names. A variable name that is in AUTOMATIC_VARIABLES is always replaced with its value, even if it is not in square brackets. However, variables are only replaced this way when inside of another command. For example, if "dex" is in AUTOMATIC VARIABLES, `brand.eval_string("dex bonus is equal to [format_bonus dex].", {"dex":2})` evaluates to `dex bonus is equal to +2.`
 
 ## Functions
 

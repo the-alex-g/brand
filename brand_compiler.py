@@ -1,6 +1,18 @@
 import os
 
 
+class ReplacementLine:
+    name = ""
+    text = ""
+
+    def __init__(self, string):
+        for char in string:
+            if char == " ":
+                break
+            self.name += char
+        self.text = string
+
+
 def get_file_contents(path):
     lines = open(path).readlines()
     string = ""
@@ -9,20 +21,47 @@ def get_file_contents(path):
     return string
 
 
-def comma_separate(stuff):
+def separate(stuff, spacer):
     string = ""
     for item in stuff:
         if string != "":
-            string += ", "
+            string += spacer
         string += item
     return string
 
 
-def get_module_section(module, section):
+def get_module_lines(module, section):
     path = os.path.join(os.getcwd(), "brand_" + module, section + ".txt")
     if os.path.isfile(path):
-        return get_file_contents(path)
-    return ""
+        return open(path).readlines()
+    return []
+
+
+def get_module_section(module, section):
+    return separate(get_module_lines(module, section), "")
+
+
+def get_module_value_assignments(module):
+    replacement_lines = []
+    for line in get_module_lines(module, "new_values"):
+        replacement_lines.append(ReplacementLine(line))
+    return replacement_lines
+
+
+def get_module_section_with_replacements(module, section, replacements):
+    section_text = ""
+    for line in get_module_lines(module, section):
+        was_replaced = False
+        for replacement in replacements:
+            if line.startswith(replacement.name):
+                if section_text != "":
+                    section_text += "\n"
+                section_text += replacement.text
+                was_replaced = True
+                break
+        if not was_replaced:
+            section_text += line
+    return section_text
 
 
 def get_available_modules():
@@ -42,7 +81,7 @@ def get_available_modules():
 def get_module_name():
     available_modules = get_available_modules()
 
-    print("The following brand modules are available:", comma_separate(available_modules))
+    print("The following brand modules are available:", separate(available_modules, ", "))
 
     while True:
         module_name = input("Enter the desired module: ")
@@ -67,6 +106,11 @@ def compile(module_name="", file_name="brand"):
     modules_to_compile = ["core"]
     if module_name != "core":
         modules_to_compile.append(module_name)
+    
+    value_assignments = []
+    for module in modules_to_compile:
+        for assignment in get_module_value_assignments(module):
+            value_assignments.append(assignment)
 
     brand_file = open(file_name + ".py", "w")
 
@@ -81,7 +125,7 @@ def compile(module_name="", file_name="brand"):
         brand_file.write("\n" + get_module_section(module, "imports"))
     # compile module global variables
     for module in modules_to_compile:
-        brand_file.write("\n" + get_module_section(module, "globals"))
+        brand_file.write("\n" + get_module_section_with_replacements(module, "globals", value_assignments))
     # compile module bodies
     for module in modules_to_compile:
         brand_file.write("\n\n\n" + get_module_section(module, "body"))

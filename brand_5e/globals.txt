@@ -82,6 +82,3 @@ CR_TO_XP = {
     29:"135,000",
     30:"155,000",
 }
-
-for ability in ["str", "dex", "con", "int", "wis", "cha"]:
-    AUTOMATIC_VARIABLES.append(ability)
