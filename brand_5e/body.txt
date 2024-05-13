@@ -1,42 +1,3 @@
-# calculates proficiency bonus from cr
-def cr_to_prof(cr):
-    if type(cr) == str:
-        return 2
-    else:
-        return max(2, floor((cr - 1) / 4) + 2)
-
-
-# returns decimal form of given cr
-def cr_to_digit(cr):
-    if type(cr) == int:
-        return cr
-    else:
-        return 1 / int(cr[-1])
-
-
-# returns fractional from of given cr
-def cr_to_string(cr):
-    if type(cr) == int:
-        return str(cr)
-    elif type(cr) == float:
-        return {0.125:"1/8", 0.25:"1/4", 0.5:"1/2"}[cr]
-    else:
-        return cr
-
-
-# calculates bonus from ability score
-def score_to_bonus(score):
-    return floor(score / 2) - 5
-
-
-# returns dictionary with bonuses mapped to abilities
-def ability_scores_to_bonuses(stats):
-    bonusdict = {}
-    for ability in stats:
-        bonusdict[ability] = score_to_bonus(stats[ability])
-    return bonusdict
-
-
 # returns a spell description in an indented quote block
 def makespell(name, level, school, casting_time, spell_range, components, duration, classes, effect, higher_levels):
     spell = "\\begin{quote}" + bold(name) + NEWLINE + italics(format_index(int(level)) + "-level " + school.lower()) + NEWLINE
@@ -57,12 +18,11 @@ def cr(cr):
 
 # returns in the form of "DC challenge Ability (Skill) check"
 def check(dc, *skill):
-    skill = separate(skill)
+    skill = _separate(skill)
     return "DC " + str(dc) + " " + ABILITIES_SPELLOUT[SKILL_ABILITY[skill]] + " (" + SKILL_PRETTYNAME[skill] + ") check"
 
 
 # similar to the save function, but with a skill
-FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["opposedcheck"] = "profbonus"
 def opposedcheck(ability, abilitybonus, profbonus):
     dc = 8 + abilitybonus + profbonus
     ability_name = ""
@@ -72,7 +32,6 @@ def opposedcheck(ability, abilitybonus, profbonus):
 
 
 # returns in the form of "DC challenge Ability saving throw"
-FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["save"] = "profbonus"
 def save(ability, abilitybonus, profbonus):
     dc = 8 + abilitybonus + profbonus
     ability_name = ""
@@ -89,6 +48,16 @@ def basicsave(ability, difficulty):
     return "DC " + str(difficulty) + " " + ability_name + "saving throw"
 
 
+def _score_to_bonus(score):
+    return floor(score / 2) - 5
+
+
 # returns in the form of "score (bonus)"
 def stat(score):
-    return str(score) + " (" + format_bonus(score_to_bonus(score)) + ")"
+    return str(score) + " (" + format_bonus(_score_to_bonus(score)) + ")"
+
+
+FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["opposedcheck"] = ["profbonus"]
+FUNCTIONS_REQUIRING_EXTRA_PARAMETERS["save"] = ["profbonus"]
+for ability in ["str", "dex", "con", "int", "wis", "cha"]:
+    AUTOMATIC_VARIABLES.append(ability)

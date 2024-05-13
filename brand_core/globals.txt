@@ -1,4 +1,4 @@
 FUNCTIONS_REQUIRING_EXTRA_PARAMETERS = {}
+AUTOMATIC_VARIABLES = []
 NEWLINE = "\\\\"
 LINEBREAK = "\\bigskip"
-ABILITY_LIST = ["str", "dex", "con", "int", "wis", "cha"]

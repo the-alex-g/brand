@@ -24,7 +24,7 @@ def sum(*numbers):
 
 # returns the name with the proper indefinite article prefixed to it
 def articulate(capitalized, *name):
-    name = separate(name)
+    name = _separate(name)
     string = "a"
     if name[0].lower() in ["a", "e", "i", "o", "u"]:
         string += "n"
@@ -35,32 +35,32 @@ def articulate(capitalized, *name):
 
 # returns spellname in italics
 def spell(*spellname):
-    return "\\textit{" + separate(spellname) + "}"
+    return "\\textit{" + _separate(spellname) + "}"
 
 
 # returns monster name in bold
 def monster(*monstername):
-    return "\\textbf{" + separate(monstername) + "}"
+    return "\\textbf{" + _separate(monstername) + "}"
 
 
 # bolds input
 def bold(*stuff):
-    return "\\textbf{" + separate(stuff) + "}"
+    return "\\textbf{" + _separate(stuff) + "}"
 
 
 # italicizes input
 def italics(*stuff):
-    return "\\textit{" + separate(stuff) + "}"
+    return "\\textit{" + _separate(stuff) + "}"
 
 
 # makes input bold and italic
 def bolditalics(*stuff):
-    return "\\textbf{\\textit{" + separate(stuff) + "}}"
+    return "\\textbf{\\textit{" + _separate(stuff) + "}}"
 
 
 # collects all parameters as a brand-recognized string group
 def bind(*stuff):
-    return "<" + separate(stuff) + ">"
+    return "<" + _separate(stuff) + ">"
 
 
 # returns a table mapping the roll of a die to ampersand-separated entries
@@ -127,6 +127,46 @@ def _get_list_body(items):
     return list_body + "\\item " + entry
 
 
+# Return array as string with each item separated by a given sequence
+def _separate(array, spacer=" "):
+    string = ""
+    for item in array:
+        if string != "":
+            string += spacer
+        string += str(item)
+    return string
+
+
+# Returns a number as a string with proper sign indication
+def format_bonus(bonus):
+    if bonus >= 0:
+        return "+" + str(bonus)
+    else:
+        return str(bonus)
+
+
+# returns string of number with proper ordinary suffix
+def format_index(index):
+    index = str(index)
+    if index[-1] == 1:
+        return "1st"
+    elif index[-1] == 2:
+        return "2nd"
+    elif index[-1] == 3:
+        return "3rd"
+    else:
+        return str(index) + "th"
+
+
+# returns string with proper possessive suffix
+def possessive(*name):
+    name = _separate(name)
+    if name[-1] == "s":
+        return name + "'"
+    else:
+        return name + "'s"
+
+
 # builds and executes function from bracketed command string
 def _format_and_execute(field, params):
     formatted_field = ""
@@ -144,7 +184,7 @@ def _format_and_execute(field, params):
             if in_function_body:
                 if formatted_field[-1] != "(":
                     formatted_field += ", "
-                if arg_text in ABILITY_LIST:
+                if arg_text in AUTOMATIC_VARIABLES:
                     arg_text = str(params[arg_text])
                 elif not arg_text.isdigit() and not arg_text == "True" and not arg_text == "False":
                     arg_text = "\"" + arg_text + "\""
@@ -201,80 +241,7 @@ def _resolve_functions(string, params):
 
 
 # processes all bracketed commands in the given string
-def parse_string(string, params):
+def eval_string(string, params):
     for key in params:
         string = string.replace("[" + key + "]", str(params[key]))
     return _resolve_functions(string, params)
-
-
-# Return array as string with each item separated by a given sequence
-def separate(array, spacer=" "):
-    string = ""
-    for item in array:
-        if string != "":
-            string += spacer
-        string += str(item)
-    return string
-
-
-# Returns array as string with each item separated by a comma
-def comma_separate(array):
-    return separate(array, spacer=", ")
-
-
-# Returns a number as a string with proper sign indication
-def format_bonus(bonus):
-    if bonus >= 0:
-        return "+" + str(bonus)
-    else:
-        return str(bonus)
-
-
-# returns string of number with proper ordinary suffix
-def format_index(index):
-    if index == 1:
-        return "1st"
-    elif index == 2:
-        return "2nd"
-    elif index == 3:
-        return "3rd"
-    else:
-        return str(index) + "th"
-
-
-# returns string with proper possessive suffix
-def possessive(*name):
-    name = separate(name)
-    if name[-1] == "s":
-        return name + "'"
-    else:
-        return name + "'s"
-
-
-# returns headername field if it exists, or name field if it doesn't
-def headername(dictionary):
-    if "headername" in dictionary:
-        return dictionary["headername"]
-    else:
-        return dictionary["name"]
-
-
-# returns shortname field if it exists, or lowercased name field if it doesn't
-def shortname(dictionary):
-    if "shortname" in dictionary:
-        return dictionary["shortname"]
-    else:
-        return dictionary["name"].lower()
-
-
-# returns a dictionary with the name and a 0 profbonus
-def blank_params(name):
-    return {"name":name, "profbonus":0}
-
-
-# returns the given key from the dictionary if it exists, or returns the default if the key does not exist
-def get_key_if_exists(dictionary, key, default):
-    if key in dictionary:
-        return dictionary[key]
-    else:
-        return default
