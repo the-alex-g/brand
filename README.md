@@ -101,3 +101,30 @@ Returns the sum of all arguments.\
 The first argument specifies the columns of the table (same as the LaTeX tabular environment, but the vertical lines are automatically entered). If there are any X columns, the tabularx environment is used instead with a width of `0.8\columnwidth`. The rest of the arguments form the table entries, which must be separated by ampersands.\
 `[table cc Number & Meaning & 12 & 12 is a pretty good number]` ->
 `\bigskip\begin{tabular}{|c|c|}\hline Number & Meaning \\ [2pt]\hline 12 & 12 is a pretty good number \\ \hline\end{tabular}`
+
+### 5e Module
+
+**[basicsave ability dc]**\
+Returns save with the given ability and difficulty. Note that the ability must be prefixed with w/, otherwise the parser will think it's a variable and try to replace it with the bonus. Using w/none omits the ability name entirely.\
+`[basicsave w/dex 15]` -> `DC 15 Dexterity saving throw`\
+`[basicsave w/none 12]` -> `DC 12 saving throw`
+
+**[check dc *skill]**\
+Returns skill check text.\
+`[check 12 sleight of hand]` -> `DC 12 Dexterity (Sleight of Hand) check`
+
+**[cr number]**\
+Returns the given CR with the associated XP value.\
+`[cr 1/4]` -> `1/4 (50 XP)`\
+`[cr 10]` -> `10 (5,900 XP)`
+
+**[opposedcheck ability bonus]**\
+Returns ability check text, where the DC is based on the bonus parameter and the "profbonus" field of the eval_string "param" field. Similar to the `basicsave` function, the ability name must be prefixed with w/.\
+`eval_string("[opposedcheck w/str 3]", {"profbonus":2})` -> `DC 13 Strength check`
+
+**[save ability, bonus]**\
+Works in the same way as the `opposedcheck` function, except that it uses "saving throw" instead of "check".
+
+**[stat score]**\
+Returns the score with associated bonus.\
+`[stat 13]` -> `13 (+1)`

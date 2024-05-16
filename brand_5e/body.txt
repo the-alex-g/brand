@@ -1,16 +1,3 @@
-# returns a spell description in an indented quote block
-def makespell(name, level, school, casting_time, spell_range, components, duration, classes, effect, higher_levels):
-    spell = "\\begin{quote}" + bold(name) + NEWLINE + italics(format_index(int(level)) + "-level " + school.lower()) + NEWLINE
-    spell += bold("Casting Time: ") + casting_time + NEWLINE
-    spell += bold("Range: ") + spell_range + NEWLINE
-    spell += bold("Components: ") + components + NEWLINE
-    spell += bold("Duration: ") + duration + NEWLINE
-    spell += bold("Classes: ") + classes + NEWLINE
-    spell += effect + NEWLINE
-    spell += bolditalics("At Higher Levels: ") + higher_levels
-    return spell + "\\end{quote}"
-
-
 # returns CR with XP value
 def cr(cr):
     return str(cr) + " (" + CR_TO_XP[cr] + " XP)"
