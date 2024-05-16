@@ -2,3 +2,4 @@ FUNCTIONS_REQUIRING_EXTRA_PARAMETERS = {}
 AUTOMATIC_VARIABLES = []
 NEWLINE = "\\\\"
 LINEBREAK = "\\bigskip"
+include_functions = {}

@@ -63,6 +63,12 @@ Returns the index with the proper ordinary suffix.\
 `[format_index 2]` -> `2nd`\
 `[format_index 5]` -> `5th`
 
+**[include type filename]**\
+This function relies on the `include_functions` global parameter, which is a dictionary of the form `{type:lambda function}`. Each function must accept one argument. When this function is evaluated, if the `type` parameter is in the include_functions dictionary, it calls the associated function with the `filename` argument and returns the result within a \quote section.
+
+`include_functions["mytest"] = lambda filename : "filename is " + filename`\
+`[include mytest go/to/marz]` -> `\begin{quote} filename is go/to/marz \end{quote}`
+
 **[italics \*stuff]**\
 This function works in the same way as the `[bold]` command, but makes the text italic instead of bold.
 
