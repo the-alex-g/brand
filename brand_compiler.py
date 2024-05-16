@@ -1,4 +1,7 @@
 import os
+import sys
+
+THIS_LOCATION = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 
 class ReplacementLine:
@@ -31,7 +34,7 @@ def separate(stuff, spacer):
 
 
 def get_module_lines(module, section):
-    path = os.path.join(os.getcwd(), "brand_" + module, section + ".txt")
+    path = os.path.join(THIS_LOCATION, "brand_" + module, section + ".txt")
     if os.path.isfile(path):
         return open(path).readlines()
     return []
@@ -66,10 +69,9 @@ def get_module_section_with_replacements(module, section, replacements):
 
 def get_available_modules():
     available_modules = []
-    cwd = os.getcwd()
 
-    for item in os.listdir(cwd):
-        path = os.path.join(cwd, item)
+    for item in os.listdir(THIS_LOCATION):
+        path = os.path.join(THIS_LOCATION, item)
         if os.path.isdir(path):
             if item.startswith("brand_"):
                 available_modules.append(item[6:])
