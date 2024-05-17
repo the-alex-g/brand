@@ -14,6 +14,20 @@ def roll(num, size, *bonuses):
     return string + ")"
 
 
+def index_plural(num, *name):
+    name = _separate(name)
+    string = str(num) + " " + name
+    if num != 1:
+        if name[-2:] in ["sh", "ch", "x"]:
+            return string + "es"
+        elif name[-1] in ["s", "z"]:
+            if name[-2] == name[-1]:
+                return string + "es"
+            return string + name[-1] + "es"
+        return string + "s"
+    return string
+
+
 # adds all the inputs and returns them as a string
 def sum(*numbers):
     total = 0
@@ -174,8 +188,15 @@ def include(include_type, filename):
     return ""
 
 
+def percent():
+    return "\\%"
+
+
 # builds and executes function from bracketed command string
 def _format_and_execute(field, params):
+    if field in params:
+        return str(params[field])
+
     formatted_field = ""
     in_function_body = False
     in_string_block = False
@@ -193,11 +214,15 @@ def _format_and_execute(field, params):
                     formatted_field += ", "
                 if arg_text in AUTOMATIC_VARIABLES:
                     arg_text = str(params[arg_text])
-                elif not arg_text.isdigit() and not arg_text == "True" and not arg_text == "False":
+                elif arg_text in ["t", "T", "true", "True"]:
+                    arg_text = "True"
+                elif arg_text in ["f", "F", "false", "False"]:
+                    arg_text = "False"
+                elif not arg_text.isdigit():
                     arg_text = "\"" + arg_text + "\""
                 formatted_field += arg_text
                 arg_text = ""
-            elif formatted_field != field:
+            else:
                 formatted_field += "("
                 in_function_body = True
         else:
@@ -215,7 +240,7 @@ def _format_and_execute(field, params):
 
 
 # processes a string to extract and execute all bracketed command sequences
-def _resolve_functions(string, params):
+def eval_string(string, params):
     updated_string = ""
     field = ""
     field_started = False
@@ -236,7 +261,7 @@ def _resolve_functions(string, params):
             else:
                 field_started = False
                 if nested:
-                    field = _resolve_functions(field, params)
+                    field = eval_string(field, params)
                 updated_string += _format_and_execute(field, params)
                 field = ""
                 nested = False
@@ -245,10 +270,3 @@ def _resolve_functions(string, params):
         else:
             updated_string += char
     return updated_string
-
-
-# processes all bracketed commands in the given string
-def eval_string(string, params):
-    for key in params:
-        string = string.replace("[" + key + "]", str(params[key]))
-    return _resolve_functions(string, params)

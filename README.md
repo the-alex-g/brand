@@ -69,6 +69,13 @@ This function relies on the `include_functions` global parameter, which is a dic
 `include_functions["mytest"] = lambda filename : "filename is " + filename`\
 `[include mytest go/to/marz]` -> `\begin{quote} filename is go/to/marz \end{quote}`
 
+**[index_plural num *name]**\
+Returns the number and name with a plural ending. WARNING: it only operates correctly on plurals formed by adding -es, -s, -ses, or -zes.
+`[index_plural 2 shoe]` -> `2 shoes`\
+`[index_plural 1 fox]` -> `1 fox`\
+`[index_plural 4 bus]` -> `4 busses`\
+`[index_plural 3 wolf]` -> `3 wolfs` (an example of an incorrect output)
+
 **[italics \*stuff]**\
 This function works in the same way as the `[bold]` command, but makes the text italic instead of bold.
 
@@ -78,6 +85,10 @@ Returns the name wrapped in a \textbf macro. This function is used to make sure 
 
 **[numberlist \*entries]**\
 This function works in the same way as the `[bulletlist]` command, but uses the enumerate environment to create a numbered list.
+
+**[percent]**\
+Returns `\%`, appearing as a percent sign in LaTeX.
+`[percent]` -> `\%`
 
 **[possessive \*name]**\
 Returns the name with the proper possessive ending.\
