@@ -195,7 +195,7 @@ def percent():
 # builds and executes function from bracketed command string
 def _format_and_execute(field, params):
     if field in params:
-        return str(params[field])
+        return eval_string(str(params[field]), params)
 
     formatted_field = ""
     in_function_body = False
@@ -213,7 +213,7 @@ def _format_and_execute(field, params):
                 if formatted_field[-1] != "(":
                     formatted_field += ", "
                 if arg_text in AUTOMATIC_VARIABLES:
-                    arg_text = str(params[arg_text])
+                    arg_text = eval_string(str(params[arg_text]), params)
                 elif arg_text in ["t", "T", "true", "True"]:
                     arg_text = "True"
                 elif arg_text in ["f", "F", "false", "False"]:
@@ -235,7 +235,7 @@ def _format_and_execute(field, params):
         for param_name in FUNCTIONS_REQUIRING_EXTRA_PARAMETERS[function_name]:
             if formatted_field[-1] != "(":
                 formatted_field += ", "
-            formatted_field += str(params[param_name])
+            formatted_field += eval_string(str(params[param_name]), params)
     return eval(formatted_field + ")")
 
 
