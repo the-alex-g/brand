@@ -162,14 +162,14 @@ def format_bonus(bonus):
 # returns string of number with proper ordinary suffix
 def format_index(index):
     index = str(index)
-    if index[-1] == "1":
-        return index + "st"
-    elif index[-1] == "2":
-        return index + "nd"
-    elif index[-1] == "3":
-        return index + "rd"
-    else:
-        return index + "th"
+    if not (len(index) == 2 and index[0] == "1"):
+        if index[-1] == "1":
+          return index + "st"
+        elif index[-1] == "2":
+          return index + "nd"
+        elif index[-1] == "3":
+            return index + "rd"
+    return index + "th"
 
 
 # returns string with proper possessive suffix
