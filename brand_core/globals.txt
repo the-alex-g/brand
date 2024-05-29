@@ -3,3 +3,4 @@ AUTOMATIC_VARIABLES = []
 NEWLINE = "\\\\"
 LINEBREAK = "\\bigskip"
 include_functions = {}
+unquoted_include_functions = {}

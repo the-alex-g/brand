@@ -182,14 +182,20 @@ def possessive(*name):
 
 
 def include(include_type, filename):
-    global include_functions
+    global include_functions, unquoted_include_functions
     if include_type in include_functions:
         return "\\begin{quote}" + include_functions[include_type](filename) + "\\end{quote}"
+    elif include_type in unquoted_include_functions:
+        return NEWLINE + LINEBREAK + unquoted_include_functions[include_type](filename)
     return ""
 
 
 def percent():
     return "\\%"
+
+
+def newline():
+    return NEWLINE
 
 
 # builds and executes function from bracketed command string
@@ -219,7 +225,7 @@ def _format_and_execute(field, params):
                 elif arg_text in ["f", "F", "false", "False"]:
                     arg_text = "False"
                 elif not arg_text.isdigit():
-                    arg_text = "\"" + arg_text + "\""
+                    arg_text = '"' + arg_text + '"'
                 formatted_field += arg_text
                 arg_text = ""
             else:
