@@ -14,25 +14,32 @@ def roll(num, size, *bonuses):
     return string + ")"
 
 
-def index_plural(num, *name):
-    name = _separate(name)
-    string = str(num) + " " + name
-    if num != 1:
-        if name[-2:] in ["sh", "ch", "x"]:
+def plural(*name):
+    string = _separate(name)
+    if string[-2:] in ["sh", "ch", "x"]:
+        return string + "es"
+    elif string[-1] in ["s", "z"]:
+        if string[-2] == string[-1]:
             return string + "es"
-        elif name[-1] in ["s", "z"]:
-            if name[-2] == name[-1]:
-                return string + "es"
-            return string + name[-1] + "es"
-        return string + "s"
-    return string
+        return string + string[-1] + "es"
+    return string + "s"
+
+
+def index_plural(num, *name):
+    if num != 1:
+        return str(num) + " " + plural(*name)
+    return str(num) + " " + _separate(name)
 
 
 # adds all the inputs and returns them as a string
 def sum(*numbers):
     total = 0
     for number in numbers:
-        total += number
+        if type(number) == str:
+            if number.isdigit():
+                total += int(number)
+        elif type(number) == int:
+            total += number
     return str(total)
 
 
@@ -208,9 +215,15 @@ def _format_and_execute(field, params):
     in_string_block = False
     arg_text = ""
     function_name = ""
+    escaping = False
     # the extra space at the end of field causes the last argument to be processed
     for char in field + " ":
-        if char == "<":
+        if escaping:
+            arg_text += char
+            escaping = False
+        elif char == "\\":
+            escaping = True
+        elif char == "<":
             in_string_block = True
         elif char == ">":
             in_string_block = False
@@ -252,8 +265,17 @@ def eval_string(string, params):
     field_started = False
     indentation_level = 0
     nested = False
+    escaping = False
     for char in string:
-        if char == "[":
+        if escaping:
+            if field_started:
+                field += "\\" + char
+            else:
+                updated_string += char
+            escaping = False
+        elif char == "\\":
+            escaping = True
+        elif char == "[":
             if field_started:
                 indentation_level += 1
                 nested = True

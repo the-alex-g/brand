@@ -42,3 +42,7 @@ def _score_to_bonus(score):
 # returns in the form of "score (bonus)"
 def stat(score):
     return str(score) + " (" + format_bonus(_score_to_bonus(score)) + ")"
+
+
+def bonus(score):
+    return str(_score_to_bonus(score))
