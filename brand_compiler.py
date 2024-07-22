@@ -114,7 +114,7 @@ def compile(module_name="", file_name="brand"):
         for assignment in get_module_value_assignments(module):
             value_assignments.append(assignment)
 
-    brand_file = open(THIS_LOCATION + "/" + file_name + ".py", "w")
+    brand_file = open(os.path.join(THIS_LOCATION, file_name + ".py"), "w")
 
     # get version information
     brand_file.write("# BRAND CORE v.")

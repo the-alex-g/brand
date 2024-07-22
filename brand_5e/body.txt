@@ -46,3 +46,23 @@ def stat(score):
 
 def bonus(score):
     return str(_score_to_bonus(score))
+
+
+def damage(*amount):
+    string = ""
+    diceroll = []
+    for i in amount:
+        if type(i) == int:
+            diceroll.append(i)
+        else:
+            if len(diceroll) > 0:
+                if len(diceroll) > 1:
+                    string += roll(*diceroll)
+                else:
+                    string += str(diceroll[0])
+                diceroll = []
+            if i == "+":
+                string += " plus "
+            else:
+                string += " " + i + " damage"
+    return string
