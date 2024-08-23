@@ -1,5 +1,8 @@
-def roll(dice):
-    d_index = dice.find("d")
-    count = int(dice[0:d_index])
-    size = int(dice[d_index + 1:])
-    return str(count) + "-" + str(size * count)
+def roll(*dice):
+    if len(dice) == 1:
+        dice = dice[0]
+        d_index = dice.find("d")
+        count = int(dice[0:d_index])
+        size = int(dice[d_index + 1:])
+        return str(count) + "-" + str(size * count)
+    return roll(_separate(dice[0:2], spacer="d"))

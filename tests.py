@@ -28,7 +28,7 @@ tests = [
     Test("sum", {"1 2 3":"6"}),
     Test("articulate", {"t fudge":"A fudge", "f ant":"an ant"}),
     Test("format_index", {"12":"12th", "5":"5th", "1":"1st", "22":"22nd"}),
-    Test("percent", {"":"\\%"}),
+    Test("percent", {"":"\\%", "10":"10\\%", "10 10":"20\\%"}),
 ]
 
 

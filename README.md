@@ -86,9 +86,11 @@ Returns the name wrapped in a \textbf macro. This function is used to make sure 
 **[numberlist \*entries]**\
 This function works in the same way as the `[bulletlist]` command, but uses the enumerate environment to create a numbered list.
 
-**[percent]**\
-Returns `\%`, appearing as a percent sign in LaTeX.
-`[percent]` -> `\%`
+**[percent *values]**\
+Returns `\%`, appearing as a percent sign in LaTeX. If a value is passed, it returns that percent. \
+`[percent]` -> `\%`\
+`[percent 50]` -> `50\%`\
+`[percent 25 10]` -> `35\%`
 
 **[possessive \*name]**\
 Returns the name with the proper possessive ending.\

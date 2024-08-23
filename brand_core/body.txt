@@ -4,7 +4,7 @@ def roll(num, size, *bonuses):
     for bonus in bonuses:
         total_bonus += bonus
     total = floor(num * (size / 2 + 0.5)) + total_bonus
-    string = str(total) + " (" + str(num) + "d" + str(size)
+    string = f"{total} ({num}d{size}"
     if total_bonus != 0:
         if total_bonus > 0:
             string += " + "
@@ -27,8 +27,8 @@ def plural(*name):
 
 def index_plural(num, *name):
     if num != 1:
-        return str(num) + " " + plural(*name)
-    return str(num) + " " + _separate(name)
+        return f"{num} {plural(*name)}"
+    return f"{num} {_separate(name)}"
 
 
 # adds all the inputs and returns them as a string
@@ -51,7 +51,7 @@ def articulate(capitalized, *name):
         string += "n"
     if capitalized:
         string = string.title()
-    return string + " " + name
+    return f"{string} {name}"
 
 
 # returns spellname in italics
@@ -81,7 +81,7 @@ def bolditalics(*stuff):
 
 # collects all parameters as a brand-recognized string group
 def bind(*stuff):
-    return "<" + _separate(stuff) + ">"
+    return f"<{_separate(stuff)}>"
 
 
 # returns a table mapping the roll of a die to ampersand-separated entries
@@ -144,8 +144,8 @@ def _get_list_body(items):
             list_body += "\\item " + entry
             entry = ""
         else:
-            entry += str(item) + " "
-    return list_body + "\\item " + entry
+            entry += f"{item} "
+    return f"{list_body}\\item {entry}"
 
 
 # Return array as string with each item separated by a given sequence
@@ -161,7 +161,7 @@ def _separate(array, spacer=" "):
 # Returns a number as a string with proper sign indication
 def format_bonus(bonus):
     if bonus >= 0:
-        return "+" + str(bonus)
+        return f"+{bonus}"
     else:
         return str(bonus)
 
@@ -197,7 +197,9 @@ def include(include_type, filename):
     return ""
 
 
-def percent():
+def percent(*values):
+    if len(values) > 0:
+        return f"{sum(*values)}\\%"
     return "\\%"
 
 
@@ -238,7 +240,7 @@ def _format_and_execute(field, params):
                 elif arg_text in ["f", "F", "false", "False"]:
                     arg_text = "False"
                 elif not arg_text.isdigit():
-                    arg_text = '"' + arg_text + '"'
+                    arg_text = f'"{arg_text}"'
                 formatted_field += arg_text
                 arg_text = ""
             else:
