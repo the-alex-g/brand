@@ -1,2 +1,2 @@
-AUTOMATIC_VARIABLES = ["str", "dex", "con", "int", "wis", "cha"]
+AUTOMATIC_VARIABLES = ("str", "dex", "con", "int", "wis", "cha")
 FUNCTIONS_REQUIRING_EXTRA_PARAMETERS = {"save":["profbonus"], "opposedcheck":["profbonus"]}

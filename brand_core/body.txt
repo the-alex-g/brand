@@ -1,24 +1,8 @@
-# returns in the form of "result (dice + bonus)"
-def roll(num, size, *bonuses):
-    total_bonus = 0
-    for bonus in bonuses:
-        total_bonus += bonus
-    total = floor(num * (size / 2 + 0.5)) + total_bonus
-    string = f"{total} ({num}d{size}"
-    if total_bonus != 0:
-        if total_bonus > 0:
-            string += " + "
-        else:
-            string += " - "
-        string += str(abs(total_bonus))
-    return string + ")"
-
-
 def plural(*name):
     string = _separate(name)
-    if string[-2:] in ["sh", "ch", "x"]:
+    if string[-2:] in ("sh", "ch", "x"):
         return string + "es"
-    elif string[-1] in ["s", "z"]:
+    elif string[-1] in ("s", "z"):
         if string[-2] == string[-1]:
             return string + "es"
         return string + string[-1] + "es"
@@ -36,7 +20,7 @@ def sum(*numbers):
     total = 0
     for number in numbers:
         if type(number) == str:
-            if number.isdigit():
+            if _isdigit(number):
                 total += int(number)
         elif type(number) == int:
             total += number
@@ -47,7 +31,7 @@ def sum(*numbers):
 def articulate(capitalized, *name):
     name = _separate(name)
     string = "a"
-    if name[0].lower() in ["a", "e", "i", "o", "u"]:
+    if name[0].lower() in ("a", "e", "i", "o", "u"):
         string += "n"
     if capitalized:
         string = string.title()
@@ -62,6 +46,17 @@ def spell(*spellname):
 # returns monster name in bold
 def monster(*monstername):
     return "\\textbf{" + _separate(monstername) + "}"
+
+
+def text(faces, *stuff):
+    content = _separate(stuff)
+    if "b" in faces:
+        content = "\\textbf{" + content + "}"
+    if "i" in faces:
+        content = "\\textit{" + content + "}"
+    if "sc" in faces:
+        content = "\\textsc{" + content + "}"
+    return content
 
 
 # bolds input
@@ -94,16 +89,14 @@ def dicetable(diesize, title, *entries):
             die_index += 1
             final_entries.append(die_index)
             final_entries.append("&")
-    return table("cX", final_entries)
+    return table("cX", *final_entries)
 
 
 # creates a table based on given columns and ampersand-separated entries
 def table(cols, *entries):
-    if type(entries[0]) == list:
-        entries = entries[0]
     tablestring = NEWLINE + "\\bigskip\\begin{tabular"
     if "X" in cols:
-        tablestring += "x}{0.8\\columnwidth"
+        tablestring += "x}{" + f"{TABLEWIDTH}\\columnwidth"
     tablestring += "}{|"
     for char in cols:
         tablestring += char + "|"
@@ -188,13 +181,27 @@ def possessive(*name):
         return name + "'s"
 
 
-def include(include_type, filename):
+def add_include_function(name, function):
+    unquoted_include_functions[name] = function
+
+
+def include(include_type, filename, *options):
     global include_functions, unquoted_include_functions
+
+    quote = False
+
     if include_type in include_functions:
-        return "\\begin{quote}" + include_functions[include_type](filename) + "\\end{quote}"
+        content = include_functions[include_type](filename)
+        quote = True
     elif include_type in unquoted_include_functions:
-        return NEWLINE + LINEBREAK + unquoted_include_functions[include_type](filename)
-    return ""
+        content = unquoted_include_functions[include_type](filename)
+    
+    if "q" in options or quote:
+        content = "\\begin{quote}" + content + "\\end{quote}"
+    else:
+        content = NEWLINE + LINEBREAK + content
+    
+    return content
 
 
 def percent(*values):
@@ -203,8 +210,22 @@ def percent(*values):
     return "\\%"
 
 
-def newline():
+def newline(*skip_size):
+    if len(skip_size) > 0:
+        return NEWLINE + skip(skip_size[0])
     return NEWLINE
+
+
+def skip(size):
+    return f"\\{size}skip"
+
+
+def _isdigit(string):
+    if string != "":
+        if string[0] == "-":
+            return string[1:].isdigit()
+        return string.isdigit()
+    return False
 
 
 # builds and executes function from bracketed command string
@@ -229,17 +250,17 @@ def _format_and_execute(field, params):
             in_string_block = True
         elif char == ">":
             in_string_block = False
-        elif char == " " and not in_string_block:
+        elif char in (" ", "\n")  and not in_string_block:
             if in_function_body:
                 if formatted_field[-1] != "(":
                     formatted_field += ", "
                 if arg_text in AUTOMATIC_VARIABLES:
                     arg_text = eval_string(str(params[arg_text]), params)
-                elif arg_text in ["t", "T", "true", "True"]:
+                elif arg_text in ("t", "T", "true", "True"):
                     arg_text = "True"
-                elif arg_text in ["f", "F", "false", "False"]:
+                elif arg_text in ("f", "F", "false", "False"):
                     arg_text = "False"
-                elif not arg_text.isdigit():
+                elif not _isdigit(arg_text):
                     arg_text = f'"{arg_text}"'
                 formatted_field += arg_text
                 arg_text = ""
@@ -267,36 +288,31 @@ def eval_string(string, params):
     field_started = False
     indentation_level = 0
     nested = False
-    escaping = False
+    in_comment = False
     for char in string:
-        if escaping:
-            if field_started:
-                field += "\\" + char
+        if char == "#":
+            in_comment = not in_comment
+        elif not in_comment:
+            if char == "[":
+                if field_started:
+                    indentation_level += 1
+                    nested = True
+                    field += "["
+                else:
+                    field_started = True
+            elif char == "]":
+                if indentation_level > 0:
+                    indentation_level -= 1
+                    field += "]"
+                else:
+                    field_started = False
+                    if nested:
+                        field = eval_string(field, params)
+                    updated_string += _format_and_execute(field, params)
+                    field = ""
+                    nested = False
+            elif field_started:
+                field += char
             else:
                 updated_string += char
-            escaping = False
-        elif char == "\\":
-            escaping = True
-        elif char == "[":
-            if field_started:
-                indentation_level += 1
-                nested = True
-                field += "["
-            else:
-                field_started = True
-        elif char == "]":
-            if indentation_level > 0:
-                indentation_level -= 1
-                field += "]"
-            else:
-                field_started = False
-                if nested:
-                    field = eval_string(field, params)
-                updated_string += _format_and_execute(field, params)
-                field = ""
-                nested = False
-        elif field_started:
-            field += char
-        else:
-            updated_string += char
     return updated_string

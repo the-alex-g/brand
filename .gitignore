@@ -1,5 +1,3 @@
-brand.py
-brand_5e.py
-brand_core.py
+brand*.py
 __pycache__
 compile.sh

@@ -1,3 +1,19 @@
+# returns in the form of "result (dice + bonus)"
+def roll(num, size, *bonuses):
+    total_bonus = 0
+    for bonus in bonuses:
+        total_bonus += bonus
+    total = floor(num * (size / 2 + 0.5)) + total_bonus
+    string = f"{total} ({num}d{size}"
+    if total_bonus != 0:
+        if total_bonus > 0:
+            string += " + "
+        else:
+            string += " - "
+        string += str(abs(total_bonus))
+    return string + ")"
+
+
 # returns CR with XP value
 def cr(cr):
     return f"{cr} ({CR_TO_XP[cr]} XP)"

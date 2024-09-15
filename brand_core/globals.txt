@@ -1,6 +1,7 @@
 FUNCTIONS_REQUIRING_EXTRA_PARAMETERS = {}
-AUTOMATIC_VARIABLES = []
+AUTOMATIC_VARIABLES = ()
 NEWLINE = "\\\\"
 LINEBREAK = "\\bigskip"
+TABLEWIDTH = 0.8
 include_functions = {}
 unquoted_include_functions = {}
